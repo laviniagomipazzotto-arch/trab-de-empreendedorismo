@@ -1,0 +1,546 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1" />
+  <title>Leitura para Todos - Ação Social</title>
+  <style>
+    /* Cores */
+    :root {
+      --vinho: #6b1e23;
+      --bege: #f5e6d3;
+      --marrom-escuro: #4a2c2a;
+      --marrom-claro: #a67c6f;
+      --dourado: #d4af37;
+    }
+
+    /* Reset básico */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+      font-family: 'Georgia', serif;
+    }
+
+    body {
+      background-color: var(--bege);
+      color: var(--vinho);
+      line-height: 1.6;
+      min-height: 100vh;
+      display: flex;
+      flex-direction: column;
+      background-image: 
+        radial-gradient(circle at 20% 80%, rgba(212, 175, 55, 0.1) 0%, transparent 20%),
+        radial-gradient(circle at 80% 20%, rgba(212, 175, 55, 0.1) 0%, transparent 20%);
+    }
+
+    header {
+      background-color: var(--vinho);
+      color: var(--bege);
+      padding: 2rem;
+      text-align: center;
+      border-bottom: 6px solid var(--marrom-escuro);
+      box-shadow: 0 6px 12px rgba(107, 30, 35, 0.6);
+      position: relative;
+      overflow: hidden;
+    }
+
+    header::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      height: 100%;
+      background: linear-gradient(45deg, transparent 40%, rgba(212, 175, 55, 0.2) 50%, transparent 60%);
+      animation: bookShine 3s infinite;
+    }
+
+    @keyframes bookShine {
+      0%, 100% { transform: translateX(-100%); }
+      50% { transform: translateX(100%); }
+    }
+
+    header h1 {
+      font-family: 'Courier New', Courier, monospace;
+      font-size: 3rem;
+      letter-spacing: 4px;
+      text-shadow: 2px 2px 4px var(--marrom-escuro);
+      margin-bottom: 1rem;
+      position: relative;
+    }
+
+    .book-decoration {
+      font-size: 2rem;
+      margin: 0 1rem;
+      color: var(--dourado);
+      text-shadow: 0 0 8px rgba(212, 175, 55, 0.8);
+      animation: bookGlow 2s infinite alternate;
+    }
+
+    @keyframes bookGlow {
+      from { text-shadow: 0 0 8px rgba(212, 175, 55, 0.8); }
+      to { text-shadow: 0 0 16px rgba(212, 175, 55, 1.2); }
+    }
+
+    /* Abas de navegação */
+    .abas-container {
+      background: linear-gradient(135deg, var(--vinho), var(--marrom-escuro));
+      padding: 2rem;
+      border-radius: 15px;
+      box-shadow: 0 8px 20px rgba(107, 30, 35, 0.4);
+      margin: 2rem auto;
+      max-width: 800px;
+    }
+
+    .abas {
+      display: flex;
+      justify-content: center;
+      margin-bottom: 2rem;
+      border-bottom: 3px solid var(--dourado);
+    }
+
+    .aba-btn {
+      background: none;
+      border: none;
+      color: var(--bege);
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      border-radius: 8px 8px 0 0;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .aba-btn::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.3), transparent);
+      transition: left 0.5s ease;
+    }
+
+    .aba-btn:hover::before {
+      left: 100%;
+    }
+
+    .aba-btn.ativa {
+      background-color: var(--dourado);
+      color: var(--vinho);
+      box-shadow: 0 0 15px rgba(212, 175, 55, 0.5);
+    }
+
+    .conteudo-aba {
+      display: none;
+      animation: fadeIn 0.5s ease;
+    }
+
+    .conteudo-aba.ativa {
+      display: block;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(20px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Catálogo de livros */
+    .catalogo {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+      gap: 2rem;
+      padding: 1rem;
+    }
+
+    .livro {
+      background: linear-gradient(135deg, var(--bege), #fff8f0);
+      border: 2px solid var(--vinho);
+      border-radius: 12px;
+      padding: 1.5rem;
+      box-shadow: 0 8px 20px rgba(107, 30, 35, 0.3);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .livro::before {
+      content: '';
+      position: absolute;
+      top: -50%;
+      left: -50%;
+      width: 200%;
+      height: 200%;
+      background: linear-gradient(45deg, transparent, rgba(212, 175, 55, 0.1), transparent);
+      transform: rotate(45deg);
+      transition: all 0.5s ease;
+    }
+
+    .livro:hover {
+      transform: translateY(-5px) scale(1.02);
+      box-shadow: 0 12px 30px rgba(107, 30, 35, 0.5);
+    }
+
+    .livro:hover::before {
+      animation: bookSparkle 2s infinite;
+    }
+
+    @keyframes bookSparkle {
+      0%, 100% { transform: rotate(45deg) translate(-50%, -50%); }
+      50% { transform: rotate(45deg) translate(50%, 50%); }
+    }
+
+    .livro img {
+      width: 120px;
+      height: 180px;
+      object-fit: cover;
+      border-radius: 6px;
+      border: 2px solid var(--marorm-claro);
+      box-shadow: 0 4px 12px rgba(107, 30, 35, 0.3);
+      margin-bottom: 1rem;
+      transition: transform 0.3s ease;
+      background: linear-gradient(45deg, var(--bege), var(--marrom-claro));
+    }
+
+    .livro:hover img {
+      transform: scale(1.05) rotate(2deg);
+    }
+
+    .livro h3 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      color: var(--marrom-escuro);
+      font-weight: bold;
+    }
+
+    .livro p {
+      font-size: 1rem;
+      font-style: italic;
+      color: var(--marrom-claro);
+      margin-bottom: 0.5rem;
+    }
+
+    .livro .tiktok-badge {
+      background-color: var(--dourado);
+      color: var(--vinho);
+      padding: 0.3rem 0.8rem;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: bold;
+      margin-top: 0.5rem;
+    }
+
+    /* Seção sobre */
+    .sobre-content {
+      background: linear-gradient(135deg, var(--bege), #fff8f0);
+      padding: 2rem;
+      border-radius: 12px;
+      border: 2px solid var(--vinho);
+      box-shadow: 0 8px 20px rgba(107, 30, 35, 0.3);
+    }
+
+    .sobre-content h3 {
+      color: var(--vinho);
+      margin-bottom: 1rem;
+      border-bottom: 2px solid var(--dourado);
+      padding-bottom: 0.5rem;
+    }
+
+    .sobre-content p {
+      margin-bottom: 1.5rem;
+      line-height: 1.8;
+    }
+
+    .localizacoes {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+      gap: 1.5rem;
+      margin-top: 2rem;
+    }
+
+    .local {
+      background: var(--bege);
+      padding: 1.5rem;
+      border-radius: 8px;
+      border: 1px solid var(--marrom-claro);
+      text-align: center;
+    }
+
+    .local h4 {
+      color: var(--vinho);
+      margin-bottom: 0.5rem;
+    }
+
+    /* Formulário */
+    form {
+      max-width: 400px;
+      margin: 2rem auto;
+      background: linear-gradient(135deg, var(--bege), #fff8f0);
+      padding: 2rem;
+      border-radius: 12px;
+      border: 2px solid var(--vinho);
+      box-shadow: 0 8px 20px rgba(107, 30, 35, 0.3);
+    }
+
+    form label {
+      display: block;
+      margin-bottom: 0.5rem;
+      font-weight: bold;
+      color: var(--vinho);
+    }
+
+    form input {
+      width: 100%;
+      padding: 0.8rem;
+      margin-bottom: 1.5rem;
+      border: 2px solid var(--marrom-claro);
+      border-radius: 6px;
+      font-size: 1rem;
+      background: var(--bege);
+      transition: border-color 0.3s ease;
+    }
+
+    form input:focus {
+      outline: none;
+      border-color: var(--dourado);
+      box-shadow: 0 0 0 3px rgba(212, 175, 55, 0.3);
+    }
+
+    form button {
+      background: linear-gradient(135deg, var(--vinho), var(--marrom-escuro));
+      color: var(--bege);
+      border: none;
+      padding: 1rem 2rem;
+      font-size: 1.2rem;
+      font-weight: bold;
+      border-radius: 8px;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      width: 100%;
+      position: relative;
+      overflow: hidden;
+    }
+
+    form button::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: -100%;
+      width: 100%;
+      height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(212, 175, 55, 0.4), transparent);
+      transition: left 0.5s ease;
+    }
+
+    form button:hover::before {
+      left: 100%;
+    }
+
+    form button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 15px rgba(107, 30, 35, 0.4);
+    }
+
+    footer {
+      background-color: var(--vinho);
+      color: var(--bege);
+      text-align: center;
+      padding: 2rem;
+      margin-top: 3rem;
+      border-top: 6px solid var(--marrom-escuro);
+    }
+
+    /* Responsividade */
+    @media (max-width: 768px) {
+      header h1 {
+        font-size: 2rem;
+      }
+      
+      .book-decoration {
+        font-size: 1.5rem;
+      }
+      
+      .abas {
+        flex-direction: column;
+      }
+      
+      .aba-btn {
+        margin-bottom: 0.5rem;
+        border-radius: 8px;
+      }
+      
+      .catalogo {
+        grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <header>
+    <h1>
+      <span class="book-decoration">📚</span>
+      Leitura para Todos
+      <span class="book-decoration">✨</span>
+    </h1>
+    <p>Democratizando o acesso à leitura</p>
+  </header>
+
+  <div class="abas-container">
+    <div class="abas">
+      <button class="aba-btn ativa" onclick="mostrarAba('livros')">📖 Catálogo de Livros</button>
+      <button class="aba-btn" onclick="mostrarAba('sobre')">ℹ️ Sobre a Ação</button>
+    </div>
+
+    <div id="aba-livros" class="conteudo-aba ativa">
+      <div class="catalogo">
+        <!-- Livros de romance famosos no TikTok - CAPAS PERSONALIZADAS -->
+        <div class="livro">
+          <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/48076eab-80ee-4e74-b987-ac723161e821.png" alt="Capa do livro 'É Assim que Acaba' - Colleen Hoover com design moderno em tons de azul e rosa, título em fonte elegante, romance emocionante" onerror="this.style.visibility='hidden'; this.parentNode.style.background='linear-gradient(135deg, #e3f2fd, #bbdefb)'" style="outline: rgb(0, 0, 0) dotted 3px; outline-offset: 1px;">
+          <h3>É Assim que Acaba</h3>
+          <p>Colleen Hoover</p>
+          <div class="tiktok-badge">Viral no TikTok</div>
+        </div>
+        <div class="livro">
+          <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2d994c1c-9163-4801-8296-67cc2a5c5dd5.png" alt="Capa do livro 'É Assim que Começa' - Colleen Hoover, sequência do best-seller, design em tons de rosa e dourado, fonte sofisticada" onerror="this.style.visibility='hidden'; this.parentNode.style.background='linear-gradient(135deg, #fce4ec, #f8bbd0)'">
+          <h3>É Assim que Começa</h3>
+          <p>Colleen Hoover</p>
+          <div class="tiktok-badge">Sequência do Best-seller</div>
+        </div>
+        <div class="livro">
+          <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/429e1fe3-03d9-4b6b-bf2b-511808734529.png" alt="Capa do livro 'A Hipótese do Amor' - Ali Hazelwood, design científico romântico, tons de vermelho e white, elementos de laboratório" onerror="this.style.visibility='hidden'; this.parentNode.style.background='linear-gradient(135deg, #ffebee, #ffcdd2)'">
+          <h3>A Hipótese do Amor</h3>
+          <p>Ali Hazelwood</p>
+          <div class="tiktok-badge">Trending</div>
+        </div>
+        <div class="livro">
+          <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/2322ee8d-2c23-44b6-9317-c42ab982d539.png" alt="Capa clássica de 'Orgulho e Preconceito' - Jane Austen, edição vintage, ilustração romântica do século XIX, tons sépia" onerror="this.style.visibility='hidden'; this.parentNode.style.background='linear-gradient(135deg, #f3e5f5, #e1bee7)'">
+          <h3>Orgulho e Preconceito</h3>
+          <p>Jane Austen</p>
+          <div class="tiktok-badge">Clássico Atemporal</div>
+        </div>
+        <div class="livro">
+          <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/9b570ebb-971f-448b-aad4-9871d9b1a280.png" alt="Capa do livro 'A Seleção' - Kiera Cass, design real romântico, vestido de princesa, tons de rosa e dourado, coroa elegante" onerror="this.style.visibility='hidden'; this.parentNode.style.background='linear-gradient(135deg, #fff8e1, #ffecb3)'">
+          <h3>A Seleção</h3>
+          <p>Kiera Cass</p>
+          <div class="tiktok-badge">Fantasia Real</div>
+        </div>
+        <div class="livro">
+          <img src="https://storage.googleapis.com/workspace-0f70711f-8b4e-4d94-86f1-2a93ccde5887/image/75366032-591f-4b6d-abec-50f96f5f4a51.png" alt="Capa emocionante de 'O Diário de uma Paixão' - Nicholas Sparks, design romântico dramático, tons de azul marinho e prata, coração estilizado" onerror="this.style.visibility='hidden'; this.parentNode.style.background='linear-gradient(135deg, #e8f5e8, #c8e6c9)'">
+          <h3>O Diário de uma Paixão</h3>
+          <p>Nicholas Sparks</p>
+          <div class="tiktok-badge">Best-seller</div>
+        </div>
+      </div>
+
+      <section id="login">
+        <h2 style="text-align: center; margin: 2rem 0 1rem; color: var(--vinho);">Acesso aos Livros</h2>
+        <form>
+          <label for="nome">Nome Completo</label>
+          <input type="text" id="nome" name="nome" placeholder="Seu nome completo" required>
+
+          <label for="email">E-mail</label>
+          <input type="email" id="email" name="email" placeholder="seu@email.com" required>
+
+          <label for="senha">Senha</label>
+          <input type="password" id="senha" name="senha" placeholder="Crie uma senha" required>
+
+          <button type="submit">📚 Acessar Livros Gratuitos</button>
+        </form>
+      </section>
+    </div>
+
+    <div id="aba-sobre" class="conteudo-aba">
+      <div class="sobre-content">
+        <h3>📚 Sobre a Ação Social "Leitura para Todos"</h3>
+        <p>
+          A <strong>Leitura para Todos</strong> é uma iniciativa social dedicada a promover o hábito da leitura e 
+          democratizar o acesso à cultura literária em nossa comunidade. Com o apoio das livrarias parceiras 
+          <em>Leitura</em> e <em>Pegai</em>, estamos transformando espaços públicos em verdadeiros pontos de cultura.
+        </p>
+
+        <h3>📍 Onde Estamos</h3>
+        <div class="localizacoes">
+          <div class="local">
+            <h4>🚇 Estações de Metrô</h4>
+            <p>Stands com livros gratuitos nas principais estações</p>
+          </div>
+          <div class="local">
+            <h4>🏫 Escolas Públicas</h4>
+            <p>Bibliotecas itinerantes e eventos de contação de histórias</p>
+          </div>
+          <div class="local">
+            <h4>🏥 Hospitais</h4>
+            <p>Espaços de leitura para pacientes e acompanhantes</p>
+          </div>
+          <div class="local">
+            <h4>🛍️ Shoppings</h4>
+            <p>Quiosques literários com livros para todos os gostos</p>
+          </div>
+        </div>
+
+        <h3>🎉 Eventos e Programação</h3>
+        <p>
+          Além dos stands fixos, promovemos eventos culturais regulares incluindo sessões de cinema temáticas, 
+          clubes do livro, encontros com autores e celebrações especiais em datas comemorativas. Nossa missão 
+          é criar uma comunidade leitora vibrante e acessível a todos!
+        </p>
+
+        <h3>💫 Nossa Missão</h3>
+        <p>
+          Democratizar o acesso a livros de qualidade, tornando a leitura uma experiência acessível, 
+          prazerosa e transformadora para pessoas de todas as idades e backgrounds.
+        </p>
+      </div>
+    </div>
+  </div>
+
+  <footer>
+    <p>© 2024 Leitura para Todos - Ação Social em parceria com Livraria Leitura e Pegai</p>
+    <p>📧 contato@leituraparatodos.org | 📞 (11) 9999-8888</p>
+  </footer>
+
+  <script>
+    function mostrarAba(abaId) {
+      // Esconder todas as abas
+      document.querySelectorAll('.conteudo-aba').forEach(aba => {
+        aba.classList.remove('ativa');
+      });
+      
+      // Mostrar a aba selecionada
+      document.getElementById(`aba-${abaId}`).classList.add('ativa');
+      
+      // Atualizar botões ativos
+      document.querySelectorAll('.aba-btn').forEach(btn => {
+        btn.classList.remove('ativa');
+      });
+      
+      event.target.classList.add('ativa');
+    }
+
+    // Animação suave ao rolar
+    document.addEventListener('DOMContentLoaded', function() {
+      const links = document.querySelectorAll('a[href^="#"]');
+      
+      links.forEach(link => {
+        link.addEventListener('click', function(e) {
+          e.preventDefault();
+          const target = document.querySelector(this.getAttribute('href'));
+          target.scrollIntoView({
+            behavior: 'smooth',
+            block: 'start'
+          });
+        });
+      });
+    });
+  </script>
+</body>
+</html>
+
